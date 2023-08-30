@@ -1,0 +1,23 @@
+appName: myoption
+environment: test
+pprofPort: 19130
+
+httpServer:
+  - port: 9130
+    certFile:
+    keyFile:
+  - port: 9131
+    certFile: configs/server_cert.pem
+    keyFile: configs/server_key.pem
+
+#    read_timeout: 6000  # 毫秒
+# 可以配置不同等级的log日志
+logDir:
+  ./logs/
+database:
+  dsn: postgres://vito@127.0.0.1:5432/stockindex_test?&sslmode=disable
+  driverName: postgres # 支持mysql
+redis:
+  addr: 127.0.0.1:6379 #服务器
+  password: 138678Mm
+  db: 3

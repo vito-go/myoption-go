@@ -1,0 +1,10 @@
+*.log
+.idea/
+*.exe
+*.exe~
+bin/
+logs/
+./myoption-admin-dist/
+build.sh
+machines/
+www/
