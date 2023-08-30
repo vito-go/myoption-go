@@ -13,6 +13,7 @@ $ make initdb
 ```
 ## 编译静态文件
 ```bash
+mkdir -p www/online/
 git clone https://github.com/vito-go/myoption.git
 cd myoption
 make build
