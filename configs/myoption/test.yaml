@@ -15,7 +15,7 @@ httpServer:
 logDir:
   ./logs/
 database:
-  dsn: postgres://vito@127.0.0.1:5432/stockindex_test?&sslmode=disable
+  dsn: postgres://vito@127.0.0.1:5432/myoption?&sslmode=disable
   driverName: postgres # 支持mysql
 redis:
   addr: 127.0.0.1:6379 #服务器
