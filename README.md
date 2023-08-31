@@ -5,7 +5,9 @@
 举例说明：当前时间为10:01:00，实时价格指数为3230.64。用户选择5分钟场次，看涨，并下注10金币。
 
 到10:06:00，如果价格高于3230.64（如3233.56），用户盈利10金币；如果价格小于等于3230.64，用户亏损10金币。"
-
+# 体验地址
+- 网页在线: https://vitogo.tpddns.cn:9131/web
+- 安卓下载链接: http://vitogo.tpddns.cn:9130/web/myoption.apk
 # Quick Start
 ##  初始化数据库(需要安装postgresql)
 ```bash
@@ -29,7 +31,7 @@ $ make start
 https://localhost:9131/web
 ```
 
-安卓下载链接: https://localhost:9130/web/myoption.apk
+安卓下载链接: http://localhost:9130/web/myoption.apk
 ## 预览
 <img  src="./images/home.png" style="width: 32%">
 <img  src="./images/my.png" style="width: 32%">
