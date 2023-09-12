@@ -11,7 +11,7 @@ type Env string
 // Cfg 配置文件. *Cfg后字段的值可以不用指针了. 可以添加required tag字段，设为false则跳过空值检查.
 type Cfg struct {
 	AppName     string           `yaml:"appName"`
-	Environment string           `yaml:"environment"` //test online 默认online
+	Environment string           `yaml:"environment"` //test or online default online
 	HTTPServer  []HttpServerConf `yaml:"httpServer"`
 	Redis       RedisConf        `yaml:"redis"`
 	PprofPort   uint16           `yaml:"pprofPort"`

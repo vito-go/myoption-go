@@ -6,10 +6,7 @@ import (
 	"myoption/internal/dao"
 )
 
-const (
-	// 方便统一 全用null表示 未来考虑变量全用一个null表示
-	null = "null"
-)
+const null = "null"
 
 type Cache struct {
 	redisCli redis.Cmdable

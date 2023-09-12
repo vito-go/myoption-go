@@ -20,33 +20,13 @@ func (p Platform) Check() bool {
 	}
 }
 
-func (p Platform) Others() []Platform {
-	return []Platform{"null"}
-	switch p {
-	case PlatformAndroid:
-		return []Platform{PlatformWindows, PlatformLinux}
-	case PlatformWindows:
-		return []Platform{PlatformAndroid, PlatformLinux}
-	case PlatformLinux:
-		return []Platform{PlatformAndroid, PlatformWindows}
-	default:
-		// fixme ios supported
-		return nil
-	}
-}
-
 const (
 	PlatformAndroid = "android"
 	PlatformWindows = "windows"
 	PlatformIos     = "ios"
 	PlatformLinux   = "linux"
-	PlatformALL     = "all"
 )
 
-type LoginInfoAdmin struct {
-	//Expire int64 `json:"expire,omitempty"` // 過期毫秒時間戳
-	LoginToken string `json:"loginToken,omitempty"`
-}
 type LoginInfo struct {
 	DeviceId   string `json:"platform"`
 	Expire     int64  `json:"expire,omitempty"` // 過期毫秒時間戳

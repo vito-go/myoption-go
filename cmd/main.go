@@ -30,12 +30,13 @@ const (
 	myOptionAPI = "myoption"
 )
 
-var mid string
-var git string
+var mid string // go build -X "main.mid=`cat /etc/machine-id`"
+var git string // go build -X "main.git=`git rev-parse HEAD`"
 
 var noCheck string
 
 func init() {
+	// 可以在这里做授权校验，也可以在main函数中做授权校验
 	return
 	func() {
 		if noCheck == "true" {
@@ -81,7 +82,9 @@ func main() {
 
 	initLog(cfg.AppName, cfg.Environment, cfg.LogDir, *out)
 	mylog.Ctx(ctx).Infof("git version: %+v", git)
-	mylog.Ctx(ctx).Infof("正在启动http服务: HTTPServer configs,  %s,  %s ", cfg.AppName, app.Cfg.HTTPServer)
+	//bash: git rev-parse HEAD
+
+	mylog.Ctx(ctx).Infof("ready to start http server, HTTPServer configs,  %s,  %s ", cfg.AppName, app.Cfg.HTTPServer)
 	var router httpsrv.Router
 
 	switch cfg.AppName {

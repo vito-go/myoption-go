@@ -34,6 +34,7 @@ func (D *DBLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql st
 	if err != nil {
 		mylog.Ctx(ctx).WithFields("rowsAffected", rowsAffected, "timeElapsed", timeElapsed.String(), "sql", sql).Errorf("SQL ==>> Error: %s", err.Error())
 	} else {
+		// uncomment this line if you want to see sql in log
 		//mylog.Ctx(ctx).WithFields("rowsAffected", rowsAffected, "timeElapsed", timeElapsed.String(), "sql", sql).Info("SQL ==>> Successfully")
 	}
 }

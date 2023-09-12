@@ -31,17 +31,16 @@ func (h *Register) GetParam(r *http.Request) (*handler.ReqParam, error) {
 }
 
 type registerParam struct {
-	UserId   string `json:"userId,omitempty"`
-	Password string `json:"password,omitempty"`
-	Salt     string `json:"salt,omitempty"` // 16个字节的随机言
-	// 新增字段
+	UserId           string `json:"userId,omitempty"`
+	Password         string `json:"password,omitempty"`
+	Salt             string `json:"salt,omitempty"` // 16个字节的随机字符串吗，盐值
 	X25519PriEncKey  string `json:"x25519PriEncKey"`
 	Ed25519PriEncKey string `json:"ed25519PriEncKey"`
 }
 type loginData struct {
 	UserInfo  *fd.UserInfo `json:"userInfo"`
 	LoinToken string       `json:"loinToken"` // 同步数据的时候不用返回
-	Balance   int64        `json:"balance"`
+	Balance   int64        `json:"balance"`   // 钱包余额
 }
 
 func (h *Register) GetRespBody(ctx context.Context, p *handler.ReqParam) *resp.HTTPBody {

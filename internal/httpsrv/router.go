@@ -8,8 +8,6 @@ import (
 	"time"
 
 	"github.com/vito-go/mylog"
-
-	"myoption/pkg/util/slice"
 )
 
 const httpMethodAny = "ANY"
@@ -20,7 +18,6 @@ type Router interface {
 	Route()
 }
 
-func handle(mux *http.ServeMux, path string, h http.Handler) {}
 func route(mux *http.ServeMux, method string, path string, h http.Handler) {
 	if len(method) == 0 {
 		panic(fmt.Sprintf("path: %s. no methods", path))
@@ -31,7 +28,7 @@ func route(mux *http.ServeMux, method string, path string, h http.Handler) {
 	mylog.Ctx(context.Background()).WithFields("method", method, "path", path).Info("ServeMux register router")
 	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 		//defer mylog.Ctx(r.Context()).WithFields("remoteAddr", r.RemoteAddr, "method", r.Method, "path", path).Info("====")
-		// app端暂不需考虑支持跨域
+		// app端可以不需考虑支持跨域
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Headers", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "*")
@@ -47,33 +44,8 @@ func route(mux *http.ServeMux, method string, path string, h http.Handler) {
 	})
 
 }
-func routeWithMethods(mux *http.ServeMux, path string, h http.Handler, method ...string) {
-	if len(method) == 0 {
-		panic(fmt.Sprintf("path: %s. no methods", path))
-	}
-	if len(path) == 0 {
-		panic(fmt.Sprintf("path: %s. no methods", path))
-	}
-	mylog.Ctx(context.Background()).WithFields("method", method, "path", path).Info("ServeMux register router")
-	mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-		//defer mylog.Ctx(r.Context()).WithFields("remoteAddr",r.RemoteAddr,"method",r.Method,"path",path).Info("====")
-		// app端暂不需考虑支持跨域
-		//w.Header1().Set("Access-Control-Allow-Origin", "*")
-		//w.Header1().Set("Access-Control-Allow-Headers", "*")
-		//w.Header1().Set("Access-Control-Allow-Methods", "*")
-		//if r.Method == http.MethodOptions {
-		//	w.Header1().Set("Access-Control-Max-Age", strconv.FormatInt(int64(time.Second*60*60*24*3), 10))
-		//	return
-		//}
-		if !slice.IsInSlice(method, r.Method) {
-			http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-			return
-		}
-		h.ServeHTTP(w, r)
-	})
 
-}
-
+// routeWithCorsWithLogin 跨域支持，且需要登录
 func routeWithCorsWithLogin(srv *Server, method string, path string, h http.Handler) {
 	mux := srv.serverMux
 	if len(method) == 0 {

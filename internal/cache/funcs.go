@@ -11,27 +11,6 @@ import (
 	"myoption/iface/myerr"
 )
 
-func getList(ctx context.Context, redisCli redis.Cmdable, k string) ([]string, error) {
-	items, err := redisCli.LRange(ctx, k, 0, -1).Result()
-	if err != nil {
-		return nil, err
-	}
-	if len(items) == 0 {
-		return nil, redis.Nil
-	}
-	if len(items) == 1 && items[0] == null {
-		return nil, nil
-	}
-	result := make([]string, 0, len(items))
-	for _, item := range items {
-		if item == null {
-			continue
-		}
-		result = append(result, item)
-	}
-	return result, nil
-}
-
 func (c *Cache) SetNilKey(ctx context.Context, k string) {
 	var expireTime = time.Minute
 	err := c.redisCli.SetEX(ctx, k, null, expireTime).Err()
@@ -62,8 +41,9 @@ func (c *Cache) SetListNilKey(ctx context.Context, k string) {
 }
 
 // set . valueData 应该是 Marshal 后的值.或者直接是一个字符串/[]byte， 要和get对应
+// Deprecated: please use redisCli.SetEX directly, because redis is so fast that there is no need to use goroutine to set.
 func set(ctx context.Context, redisCli redis.Cmdable, k string, valueData []byte, keyExpire time.Duration) {
-	// 首次设定最多等待缓存建立800毫秒
+	// 首次设定最多等待缓存建立300毫秒
 	const wait = time.Millisecond * 300
 	ch := make(chan struct{}, 1)
 	go func() {
@@ -92,17 +72,15 @@ func updateHashValue(ctx context.Context, redisCli redis.Cmdable, k string, fiel
 	num, err := redisCli.HSet(ctx, k, values...).Result()
 	if err != nil {
 		mylog.Ctx(ctx).WithFields("key", k, "field", field, "values", values).Error(err.Error())
-		// 为了数据完整性， 添加群成员如果缓存失败的话，应该将整个key删除
+		// in order to avoid redis error, delete the key
 		if err = redisCli.Del(ctx, k).Err(); err != nil {
 			mylog.Ctx(ctx).Error(err.Error())
 			return
 		}
 	}
 	mylog.Ctx(ctx).WithFields("key", k, "field", field).Infof("resultNumber: %d", num)
-	// 沒有重建緩存
-	return
 	switch num {
-	case 0: // 两个field都存在. 如：更新成员
+	case 0: // 两个field都存在. 如：更新
 	case 1: // 正常情况，hashNullField 存在即key存在, 如: 新加入成员
 	case 2: // hashNullField 值添加成功 key不存在，单单只添加成功一个成员. 所以要删除key
 		if err = redisCli.Del(ctx, k).Err(); err != nil {
@@ -206,4 +184,25 @@ func hdel(ctx context.Context, redisCli redis.Cmdable, k string, fields ...strin
 		mylog.Ctx(ctx).Error(err.Error())
 	}
 	mylog.Ctx(ctx).WithFields("key", k, "fields", fields).Infof("hash缓存: 删除. result: %+v err: %+v", result, err)
+}
+
+func getList(ctx context.Context, redisCli redis.Cmdable, k string) ([]string, error) {
+	items, err := redisCli.LRange(ctx, k, 0, -1).Result()
+	if err != nil {
+		return nil, err
+	}
+	if len(items) == 0 {
+		return nil, redis.Nil
+	}
+	if len(items) == 1 && items[0] == null {
+		return nil, nil
+	}
+	result := make([]string, 0, len(items))
+	for _, item := range items {
+		if item == null {
+			continue
+		}
+		result = append(result, item)
+	}
+	return result, nil
 }

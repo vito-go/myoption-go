@@ -2,6 +2,7 @@ package connector
 
 import (
 	"context"
+	"fmt"
 	"github.com/apache/pulsar-client-go/pulsar"
 	"github.com/apache/pulsar-client-go/pulsar/log"
 	"github.com/go-redis/redis/v8"
@@ -20,14 +21,13 @@ type Connector struct {
 }
 
 func New(cfg *conf.Cfg) (*Connector, error) {
-
 	gdb, err := OpenGromDB(cfg.Database)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("gdb error: %w", err)
 	}
 	redisCli, err := NewRedisClient(cfg.Redis)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("redisCli error: %w", err)
 	}
 	var pulsarCli pulsar.Client
 	if cfg.Pulsar.ServiceURL != "" {
@@ -72,7 +72,7 @@ func NewRedisClient(cfg conf.RedisConf) (*redis.Client, error) {
 		Username: cfg.UserName,
 		Password: cfg.Password,
 		DB:       cfg.DB,
-		// 可以在配置中添加更多需要的配置
+		// you can add more config here
 	})
 	if err := redisCli.Ping(context.Background()).Err(); err != nil {
 		return nil, err

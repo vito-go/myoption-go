@@ -21,14 +21,14 @@ func init() {
 		panic(err)
 	}
 }
-
+//go:generate go run gen_key.go
 func main() {
 	log.Println("gen key which is used for https server")
 	err := genHTTPSKeyPair("../configs/keys/server_cert.pem", "../configs/keys/server_key.pem")
 	if err != nil {
 		panic(err)
 	}
-	log.Println("gen key success")
+	log.Println("gen key success,dir: ../configs/keys/")
 }
 
 //x509.Certificate结构体中的字段代表了证书的各种信息，下面是各个字段的含义：

@@ -39,34 +39,6 @@ type submitOrderParam struct {
 	Session     mtype.Session `json:"session,omitempty"`
 }
 
-func (h *SubmitOrder) checkParam(ctx context.Context, param *submitOrderParam) *resp.HTTPBody {
-	if param.StrikePrice <= 0 {
-		return resp.Err(ctx, "下单价格非法")
-	}
-	ok := h.RepoClient.StockData.LastPriceExist(param.SymbolCode, param.StrikePrice)
-	if !ok {
-		return resp.Err(ctx, "下单价格不存在")
-	}
-	if param.SymbolCode == "" {
-		return resp.Err(ctx, "SymbolCode 不能为空")
-	}
-	if !slice.IsInSlice(configs.Symbols, param.SymbolCode) {
-		return resp.Err(ctx, "SymbolCode 不存在")
-	}
-	if !param.Option.Check() {
-		return resp.Err(ctx, "option　错误")
-	}
-	if param.BetMoney < 10 {
-		return resp.Err(ctx, "金额非法")
-	}
-	if param.BetMoney > 10000 {
-		return resp.Err(ctx, "金额超限")
-	}
-	if !param.Session.Check() {
-		return resp.Err(ctx, "Session　错误")
-	}
-	return nil
-}
 func (h *SubmitOrder) GetRespBody(ctx context.Context, p *handler.ReqParam) *resp.HTTPBody {
 	var param submitOrderParam
 	err := json.Unmarshal(p.Body, &param)
@@ -124,4 +96,33 @@ func (h *SubmitOrder) GetRespBody(ctx context.Context, p *handler.ReqParam) *res
 		return resp.Err(ctx, httperr.ErrData.Error())
 	}
 	return resp.DataOK(ctx, map[string]string{"orderId": orderId})
+}
+
+func (h *SubmitOrder) checkParam(ctx context.Context, param *submitOrderParam) *resp.HTTPBody {
+	if param.StrikePrice <= 0 {
+		return resp.Err(ctx, "下单价格非法")
+	}
+	ok := h.RepoClient.StockData.LastPriceExist(param.SymbolCode, param.StrikePrice)
+	if !ok {
+		return resp.Err(ctx, "下单价格不存在")
+	}
+	if param.SymbolCode == "" {
+		return resp.Err(ctx, "SymbolCode 不能为空")
+	}
+	if !slice.IsInSlice(configs.Symbols, param.SymbolCode) {
+		return resp.Err(ctx, "SymbolCode 不存在")
+	}
+	if !param.Option.Check() {
+		return resp.Err(ctx, "option　错误")
+	}
+	if param.BetMoney < 10 {
+		return resp.Err(ctx, "金额非法")
+	}
+	if param.BetMoney > 10000 {
+		return resp.Err(ctx, "金额超限")
+	}
+	if !param.Session.Check() {
+		return resp.Err(ctx, "Session　错误")
+	}
+	return nil
 }

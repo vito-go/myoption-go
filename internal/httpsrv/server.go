@@ -19,14 +19,12 @@ import (
 // Server 启动http服务.
 type Server struct {
 	HTTPServerConfigs []*HTTPServerConfig
-	//cfg               []conf.HttpServerConf
-	isOnline    bool
-	constantKey conf.ConstantKey
-	//httpServer        []*http.Server
-	serverMux *http.ServeMux //相当于gin.Engine
-	connector *connector.Connector
-	repoCli   *repo.Client
-	cache     *cache.Cache
+	isOnline          bool
+	constantKey       conf.ConstantKey
+	serverMux         *http.ServeMux //相当于gin.Engine
+	connector         *connector.Connector
+	repoCli           *repo.Client
+	cache             *cache.Cache
 }
 type HTTPServerConfig struct {
 	Server         *http.Server
@@ -68,7 +66,6 @@ func NewServer(isOnline bool, cfgs []conf.HttpServerConf, constantKey conf.Const
 		})
 	}
 	s := &Server{
-		//cfg: cfgs, httpServer: httpServers,
 		HTTPServerConfigs: httpServerConfigs,
 		connector:         c,
 		isOnline:          isOnline,
@@ -105,16 +102,6 @@ func (s *Server) Start(r Router) error {
 	}
 	<-ctx.Done()
 	return http.ErrServerClosed
-
-	//lis, err := net.Listen("tcp", fmt.Sprintf(":%d", s.cfg.Port))
-	//if err != nil {
-	//	return err
-	//}
-	//if s.cfg.KeyFile != "" && s.cfg.CertFile != "" {
-	//	mylog.Ctx(context.Background()).Infof("ServeTLS: certFile: %s, keyFile: %s", s.cfg.CertFile, s.cfg.KeyFile)
-	//	return s.httpServer.ServeTLS(lis, s.cfg.CertFile, s.cfg.KeyFile)
-	//}
-	//mylog.Ctx(context.Background()).Info("Serve: no certFile && keyFile ")
 }
 func (s *Server) Stop(ctx context.Context) {
 	var wg sync.WaitGroup
@@ -135,25 +122,3 @@ func (s *Server) Stop(ctx context.Context) {
 	s.connector.Close(ctx)
 
 }
-
-// func add(conn *websocket.Conn) {
-// 	defer conn.Close()
-// 	mylog.Warn("ws已经链接", conn.RemoteAddr())
-// 	err := websocket.Message.Send(conn, "hello")
-// 	if err != nil {
-// 		mylog.Error(err)
-// 	}
-// }
-
-// func ws(lis net.Listener) error {
-// 	// websocket实时日志系统
-// 	mux := http.NewServeMux()
-// 	mux.Handle("/universe/api/v1/im/ws/log", websocket.Handler(add))
-// 	srvMux := http.Server{Handler: mux}
-// 	mylog.Info("启动websocket服务")
-// 	err := srvMux.Serve(lis)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
