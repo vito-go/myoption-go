@@ -35,3 +35,8 @@ build-initdb:
 	go build -o ./bin/initdb ./script/initdb.go
 initdb: build-initdb
 	./bin/initdb doc/postgresql.sql
+build-genkey:
+	- mkdir bin
+	go build -o ./bin/genkey ./script/gen_key.go
+initkey: build-genkey
+	./bin/genkey

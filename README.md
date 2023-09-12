@@ -11,22 +11,25 @@
 # Quick Start
 ##  初始化数据库(需要安装postgresql)
 ```bash
+# 初始化数据库
 $ make initdb
+# 初始化https证书, 生成的证书在configs目录的keys目录下
+$ make initkey
 ```
 ## 编译静态文件
 ```bash
-mkdir -p www/online/
+mkdir -p www/test/
 git clone https://github.com/vito-go/myoption.git
 cd myoption
 make build
-# 链接静态文件到本项目web目录: 例如 ~/go/srv/myoption/www/online/web
-ln -s $PWD/build/web  ~/go/srv/myoption/www/online/web
+# 链接静态文件到本项目web目录: 例如 ~/go/srv/myoption/www/test/web
+ln -s $PWD/build/web  ~/go/srv/myoption/www/test/web
 ```
 ## 2. 启动服务
 ```bash
 $ make start
 ```
-## 3. 在浏览器中打开(信任证书，即可访问。证书可在configs中找到，或者自己生成)
+## 3. 在浏览器中打开(信任证书，即可访问。证书可在configs/keys中找到，或者自己生成)
 ```bash
 https://localhost:9131/web
 ```

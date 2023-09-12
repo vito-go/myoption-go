@@ -45,11 +45,11 @@ func (s *myOption) routerWeb(mux *http.ServeMux, repoClient *repo.Client) {
 	routeWithCorsNoLogin(s.server, get, "/myoption/web/v1/user/lineChart", &web.LineChart{RepoClient: repoClient})
 	if s.server.isOnline {
 		// todo: you can make link to your static file which is in your project such as flutter web
-		mux.Handle("/web/", http.FileServer(http.Dir("./www/online/")))
+		mux.Handle("/web/", http.FileServer(http.Dir("./www/test/")))
 		mylog.Ctx(context.Background()).Info("online mode")
 	} else {
 		mylog.Ctx(context.Background()).Info("test mode")
 		// todo: test mode
-		mux.Handle("/web/", http.FileServer(http.Dir("./www/online/")))
+		mux.Handle("/web/", http.FileServer(http.Dir("./www/test/")))
 	}
 }
