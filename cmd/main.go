@@ -56,9 +56,7 @@ func init() {
 	}()
 }
 
-// 更改配置一定要自测保证配置校验通过，无论线上还是测试！！！ 可以本地进行运行 添加 check_cfg参数，提交代码前校验.
 func main() {
-	// 在main函数显示指出设定命令行参数
 	ctx := context.WithValue(context.Background(), "tid", time.Now().UnixNano())
 	envPath := flag.String("env", "configs/myoption/test.yaml", "specify the configuration")
 	out := flag.Bool("out", true, "only print in os.StdOut, usually for the local running")
@@ -122,7 +120,7 @@ func goStartPProf(pporfPort uint16, readyToExit <-chan struct{}) {
 	go func() {
 		if err := srv.Serve(ln); err != nil {
 			mylog.Ctx(ctx).Warnf("pprof服务结束！[%s] err: %s", address, err.Error())
-			// 性能监控次要服务不能导致主服务故障
+			// it should not be fatal when pprof service is down
 			// chanExit <- struct{}{}
 		}
 	}()
@@ -132,7 +130,7 @@ func goStartPProf(pporfPort uint16, readyToExit <-chan struct{}) {
 	}
 }
 
-// safeExit 优雅的实现程序退出. 退出当前程序不影响下次程序启动，但是会在设定时间内优先处理完当前未完成的链接.
+// safeExit exit elegantly. exit current program will not affect next program start, but will process unfinished connection in a set time.
 func safeExit(ctx context.Context, chanExit chan struct{}, srv *httpsrv.Server, readyToExit chan struct{}) {
 	c := make(chan os.Signal, 1)
 	// If no signals are provided, all incoming signals will be relayed to c.

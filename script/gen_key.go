@@ -21,14 +21,19 @@ func init() {
 		panic(err)
 	}
 }
+
 //go:generate go run gen_key.go
 func main() {
 	log.Println("gen key which is used for https server")
-	err := genHTTPSKeyPair("../configs/keys/server_cert.pem", "../configs/keys/server_key.pem")
+	keysDir := filepath.Dir("../configs/keys/")
+	if err := os.MkdirAll(keysDir, 0755); err != nil {
+		panic(err)
+	}
+	err := genHTTPSKeyPair(filepath.Join(keysDir, "server_cert.pem"), filepath.Join(keysDir, "server_key.pem"), 2048)
 	if err != nil {
 		panic(err)
 	}
-	log.Println("gen key success,dir: ../configs/keys/")
+	log.Println("gen key success,keys directory: ", keysDir)
 }
 
 //x509.Certificate结构体中的字段代表了证书的各种信息，下面是各个字段的含义：
@@ -48,9 +53,9 @@ func main() {
 //IPAddresses：一个包含该证书所代表的实体的IP地址的列表。
 
 // genHTTPSKeyPair generates a key pair and a self-signed X.509 certificate for an HTTPS server.
-func genHTTPSKeyPair(certFileName, keyFileName string) error {
+func genHTTPSKeyPair(certFileName, keyFileName string, bits int) error {
 	// Generate a new RSA key
-	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	privateKey, err := rsa.GenerateKey(rand.Reader, bits)
 	if err != nil {
 		return err
 	}
